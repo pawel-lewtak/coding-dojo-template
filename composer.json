@@ -1,0 +1,20 @@
+{
+  "name": "coding_dojo/coding_dojo",
+  "description": "Coding dojo template for PHP",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "author's name",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "phpunit/phpunit": "6.1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dojo\\": "src/Dojo"
+    }
+  }
+}
