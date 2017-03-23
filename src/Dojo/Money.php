@@ -4,13 +4,17 @@ namespace Dojo;
 class Money
 {
     private $value;
+    private $currency;
 
     /**
-     * @param int $value
+     * Money constructor.
+     * @param $value
+     * @param $currency
      */
-    public function __construct($value)
+    public function __construct($value, $currency)
     {
         $this->value = $value;
+        $this->currency = $currency;
     }
 
     /**
@@ -27,4 +31,14 @@ class Money
     {
         return $this->value;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+
 }

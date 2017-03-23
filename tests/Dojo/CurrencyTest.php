@@ -1,7 +1,6 @@
 <?php
 
-use Dojo\Dollar;
-use Dojo\Euro;
+use Dojo\Currency;
 use Dojo\Money;
 
 class CurrencyTest extends PHPUnit_Framework_TestCase
@@ -9,20 +8,21 @@ class CurrencyTest extends PHPUnit_Framework_TestCase
     public function cases()
     {
         return [
-            [new Dollar(5), new Euro(10), new Dollar(10)],
-            [new Dollar(3), new Euro(4), new Dollar(5)],
-            [New Euro(4), new Euro(5), new Euro(9)],
-            [New Euro(4), new Dollar(3), new Dollar(5)],
-            [new Dollar(3), new Euro(4), new Euro(10)],
-            [new Dollar(1), new Dollar(1), new Euro(4)],
-            [New Euro(1), new Euro(1), new Dollar(1)],
-//            [New Dollar(1), new Euro(2), new Frank(6 * 1 + 4 * 2)],
+            [new Money(5, Currency::DOLLAR), new Money(10, Currency::EURO), new Money(10, Currency::DOLLAR)],
+            [new Money(3, Currency::DOLLAR), new Money(4, Currency::EURO), new Money(5, Currency::DOLLAR)],
+            [New Money(4, Currency::EURO), new Money(5, Currency::EURO), new Money(9, Currency::EURO)],
+            [New Money(4, Currency::EURO), new Money(3, Currency::DOLLAR), new Money(5, Currency::DOLLAR)],
+            [new Money(3, Currency::DOLLAR), new Money(4, Currency::EURO), new Money(10, Currency::EURO)],
+            [new Money(1, Currency::DOLLAR), new Money(1, Currency::DOLLAR), new Money(4, Currency::EURO)],
+            [New Money(1, Currency::EURO), new Money(1, Currency::EURO), new Money(1, Currency::DOLLAR)],
+            [New Money(1, Currency::DOLLAR), new Money(2, Currency::EURO), new Money(10, Currency::FRANK)],
+            [New Money(5, Currency::FRANK), new Money(2, Currency::EURO), new Money(2, Currency::DOLLAR)],
         ];
     }
 
     public function testCalculation()
     {
-        $calculationMoney = new Money(5);
+        $calculationMoney = new Money(5, Currency::DOLLAR);
         $this->assertEquals(10, $calculationMoney->multiply(2));
     }
 
@@ -32,11 +32,23 @@ class CurrencyTest extends PHPUnit_Framework_TestCase
      * @param $expected
      * @dataProvider cases
      */
-    public function testAddingMoney($money1, $money2, $expected){
+    public function testAddingMoney(Money $money1, Money $money2, Money $expected){
         $cinkciarz = new \Dojo\Cinkciarz();
 
-        $result = $cinkciarz->sum($money1, $money2, get_class($expected));
-        $this->assertInstanceOf(get_class($result), $expected);
+        $result = $cinkciarz->sum($money1, $money2, $expected->getCurrency());
+        $this->assertEquals($result->getCurrency(), $expected->getCurrency());
         $this->assertEquals($expected->getValue(), $result->getValue());
+    }
+
+    public function testConversion() {
+        $cinkciarz = new \Dojo\Cinkciarz();
+
+        $this->assertEquals(
+            $cinkciarz->exchange(
+                new Money(1, Currency::DOLLAR),
+                Currency::EURO
+            ),
+            new Money(2, Currency::EURO)
+        );
     }
 }
